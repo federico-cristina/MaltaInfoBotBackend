@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google import generativeai as genai
+import google.generativeai as genai
+import os
 from dotenv import load_dotenv
-from os import getenv
 
 load_dotenv()
 
@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configura l'API key
-genai.configure(api_key=getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Istanzia il modello
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
@@ -34,4 +34,6 @@ def chat_with_gemini():
     return jsonify({"response": response.text})
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # usa la variabile PORT, altrimenti fallback a 5000
+    app.run(host="0.0.0.0", port=port)
+
