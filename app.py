@@ -1,18 +1,25 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google import genai
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # 🔓 Permette richieste dal frontend React
+CORS(app)
 
-# Setup Gemini
-client = genai.Client(api_key="AIzaSyA_OTqUtUcqBQ788Ru3rRn0rZGxxZyirR8")
+# Configura l'API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-chat = client.chats.create(model="gemini-2.0-flash")
+# Istanzia il modello
+model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
+# Avvia la chat con un prompt iniziale
 with open("promptMaltaInfoBot.txt", "r", encoding="utf-8") as f:
     system_prompt = f.read()
 
+chat = model.start_chat(history=[])
 chat.send_message(system_prompt)
 
 @app.route("/api/chat", methods=["POST"])
