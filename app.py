@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google import genai
-import os
+
 app = Flask(__name__)
 CORS(app)  # 🔓 Permette richieste dal frontend React
 
@@ -10,7 +10,7 @@ client = genai.Client(api_key="AIzaSyA_OTqUtUcqBQ788Ru3rRn0rZGxxZyirR8")
 
 chat = client.chats.create(model="gemini-2.0-flash")
 
-with open("backend/promptMaltaInfoBot.txt", "r", encoding="utf-8") as f:
+with open("promptMaltaInfoBot.txt", "r", encoding="utf-8") as f:
     system_prompt = f.read()
 
 chat.send_message(system_prompt)
